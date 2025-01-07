@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Calculator</title>
+</head>
+<body>
+    <h1>Macro Calculator</h1>
+    <form>
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter your weight"><br><br>
+        
+        <label for="goal">Goal:</label>
+        <select id="goal">
+            <option value="cutting">Cutting</option>
+            <option value="maintaining">Maintaining</option>
+            <option value="bulking">Bulking</option>
+        </select><br><br>
+        
+        <button type="button" onclick="calculateMacros()">Calculate</button>
+    </form>
+    <div id="results"></div>
+    
+    <script>
+        function calculateMacros() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const goal = document.getElementById('goal').value;
+            let protein, carbs, fats;
+            
+            if (goal === 'cutting') {
+                protein = weight * 2.2;
+                carbs = weight * 2;
+                fats = weight * 0.8;
+            } else if (goal === 'maintaining') {
+                protein = weight * 2.2;
+                carbs = weight * 3;
+                fats = weight * 1;
+            } else if (goal === 'bulking') {
+                protein = weight * 2.2;
+                carbs = weight * 4;
+                fats = weight * 1.2;
+            }
+            
+            document.getElementById('results').innerHTML = `
+                <h2>Your Macros</h2>
+                <p>Protein: ${protein.toFixed(1)}g</p>
+                <p>Carbs: ${carbs.toFixed(1)}g</p>
+                <p>Fats: ${fats.toFixed(1)}g</p>
+            `;
+        }
+    </script>
+</body>
+</html>
