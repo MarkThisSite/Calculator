@@ -61,7 +61,7 @@
     <div class="container">
         <h1>Macro Calculator</h1>
         <form id="calculatorForm">
-            <label for="weight">Weight (kg):</label>
+            <label for="weight">Current Weight (kg):</label>
             <input type="number" id="weight" required>
 
             <label for="activity">Activity Level:</label>
@@ -82,7 +82,10 @@
                 <option value="bulking">Bulking (Muscle Gain)</option>
             </select>
 
-            <button type="submit">Calculate Macros</button>
+            <label for="weeks">Duration (weeks):</label>
+            <input type="number" id="weeks" required>
+
+            <button type="submit">Calculate</button>
         </form>
         <div id="result" class="result" style="display: none;">
             <h3>Results:</h3>
@@ -90,6 +93,7 @@
             <p id="protein"></p>
             <p id="carbs"></p>
             <p id="fats"></p>
+            <p id="weightChange"></p>
         </div>
     </div>
     <script>
@@ -99,24 +103,39 @@
             const weight = parseFloat(document.getElementById("weight").value);
             const activity = parseFloat(document.getElementById("activity").value);
             const goal = document.getElementById("goal").value;
+            const weeks = parseInt(document.getElementById("weeks").value);
 
-            if (!weight || !activity || !goal) {
+            if (!weight || !activity || !goal || !weeks) {
                 alert("Please fill in all fields.");
                 return;
             }
 
             let tdee = weight * 24 * activity; // Total Daily Energy Expenditure
-            if (goal === "cutting") tdee *= 0.8;
-            if (goal === "bulking") tdee *= 1.2;
+            let weightChangePerWeek = 0;
+
+            if (goal === "cutting") {
+                tdee *= 0.8;
+                weightChangePerWeek = -0.5; // Approx 0.5 kg loss per week
+            }
+            if (goal === "bulking") {
+                tdee *= 1.2;
+                weightChangePerWeek = 0.5; // Approx 0.5 kg gain per week
+            }
+            if (goal === "maintenance") {
+                weightChangePerWeek = 0; // No weight change
+            }
 
             const protein = weight * 2.2; // 2.2 grams per kg
             const fats = tdee * 0.25 / 9; // 25% of calories
             const carbs = (tdee - (protein * 4) - (fats * 9)) / 4;
 
+            const newWeight = weight + (weightChangePerWeek * weeks);
+
             document.getElementById("calories").textContent = `Calories: ${tdee.toFixed(0)} kcal/day`;
             document.getElementById("protein").textContent = `Protein: ${protein.toFixed(0)} g/day`;
             document.getElementById("carbs").textContent = `Carbs: ${carbs.toFixed(0)} g/day`;
             document.getElementById("fats").textContent = `Fats: ${fats.toFixed(0)} g/day`;
+            document.getElementById("weightChange").textContent = `Estimated Weight after ${weeks} weeks: ${newWeight.toFixed(1)} kg`;
 
             document.getElementById("result").style.display = "block";
         });
