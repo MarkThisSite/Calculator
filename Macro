@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Macro Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+    input { margin-bottom: 10px; width: 100%; padding: 10px; }
+    button { padding: 10px 20px; background-color: #007BFF; color: #fff; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+  <h1>Macro Calculator</h1>
+  <p>Fill in your details to calculate your macros:</p>
+  <form id="macroForm">
+    <label>Age:</label>
+    <input type="number" id="age" required>
+    <label>Weight (kg):</label>
+    <input type="number" id="weight" required>
+    <label>Height (cm):</label>
+    <input type="number" id="height" required>
+    <label>Gender:</label>
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+    <label>Activity Level:</label>
+    <select id="activity">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly active</option>
+      <option value="1.55">Moderately active</option>
+      <option value="1.725">Very active</option>
+    </select>
+    <label>Goal:</label>
+    <select id="goal">
+      <option value="deficit">Fat Loss</option>
+      <option value="maintenance">Maintenance</option>
+      <option value="surplus">Muscle Gain</option>
+    </select>
+    <button type="button" onclick="calculateMacros()">Calculate</button>
+  </form>
+  <h2>Results</h2>
+  <div id="results"></div>
+
+  <script>
+    function calculateMacros() {
+      const age = parseInt(document.getElementById("age").value);
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseInt(document.getElementById("height").value);
+      const gender = document.getElementById("gender").value;
+      const activity = parseFloat(document.getElementById("activity").value);
+      const goal = document.getElementById("goal").value;
+
+      let bmr = gender === "male" 
+        ? 10 * weight + 6.25 * height - 5 * age + 5 
+        : 10 * weight + 6.25 * height - 5 * age - 161;
+      
+      let tdee = bmr * activity;
+
+      if (goal === "deficit") tdee -= 500;
+      if (goal === "surplus") tdee += 500;
+
+      const protein = weight * 2;
+      const fat = (tdee * 0.25) / 9;
+      const carbs = (tdee - (protein * 4 + fat * 9)) / 4;
+
+      document.getElementById("results").innerHTML = `
+        <p>Total Calories: ${Math.round(tdee)} kcal</p>
+        <p>Protein: ${Math.round(protein)} g</p>
+        <p>Fat: ${Math.round(fat)} g</p>
+        <p>Carbohydrates: ${Math.round(carbs)} g</p>
+      `;
+    }
+  </script>
+</body>
+</html>
